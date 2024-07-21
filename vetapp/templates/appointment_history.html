@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 style="margin-top: 20px;text-align: center">Ваша история заявок</h1>
+  {% if appointments %}
+  <ul class="list-group mt-4"style="padding-inline:300px;margin-inline:20px">
+    {% for appointment in appointments %}
+    <li class="list-group-item mt-4">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <strong>Ваше имя:</strong> {{ appointment.client_name }}<br>
+          <strong>Ваше электронный адрес:</strong> {{ appointment.email }}<br>
+          <strong>Указанный номер телефона:</strong> {{ appointment.phone_number.as_e164}}<br>
+          <strong>Выбранное отделение:</strong> {{ appointment.clinic.name }}<br>
+          <strong>Дата и время приема:</strong> {{ appointment.appointment_date|date:"d.m.Y H:i" }}<br>
+          <strong>Выбранные услуги:</strong>
+          <ul>
+            {% for service in appointment.service.all %}
+            <li>{{ service.name }} - {{ service.cost.cost_amount }} руб.</li>
+            {% endfor %}
+          </ul>
+          <div class="mt-4">
+            <strong>Общая стоимость услуг:</strong> {{ appointment.total_cost }} рублей
+          </div>
+        </div>
+      </div>
+    </li>
+    
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="alert alert-info mt-4">
+    <p>Вы еще не оставляли заявки на прием.</p>
+  </div>
+  {% endif %}
+{% endblock %}

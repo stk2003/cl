@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-md-6 mx-auto" >
+    <section class="appointment-form">
+        <div style="margin-top: 20px; text-align: center">
+        <h2>Записаться на прием</h2>
+        </div>
+        {% if user.is_authenticated %}
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                <div class="table-responsive">
+                    <table class="table">
+                        {% for field in form %}
+                            <tr>
+                                <td style="text-align: right; font-weight: bold;">{{ field.label_tag }}</td>
+                                <td>{{ field }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <p>&nbsp;</p>
+                    <button type="submit" class="btn btn-primary">Отправить запись</button>
+                </div>
+            </form>
+        {% else %}
+            <p>Для того, чтобы записаться на прием, пожалуйста, <a href="{% url 'login' %}">войдите в систему</a>.</p>
+        {% endif %}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

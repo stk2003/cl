@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="contact">
+        <div style="text-align: center; margin-top: 20px; margin-bottom: 20px">
+        <h2>Контакты</h2>
+        </div>
+        <p>Если у вас возникли какие-то вопросы или вы хотите записаться на прием, пожалуйста, не стесняйтесь связаться с нами:</p>
+        <div class="row">
+            {% for clinic in clinics %}
+            <div class="col-md-4 mb-4">
+                <div class="clinic-info border p-3 mt-4">
+                    <address>
+                        <div style="text-align: center">
+                        <p><strong>{{ clinic.name }}</strong></p></div>
+                        <p>{{ clinic.address }}</p>
+                        <p>Телефонный номер: {{ clinic.phone_number.as_e164}}</p>
+                        <p>Электронный адрес: <a href="mailto:{{ clinic.email }}">{{ clinic.email }}</a></p>
+                    </address>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6" style="text-align: center; margin-top: 20px">
+                <h1>Авторизация</h1>
+
+                <a href="{% provider_login_url 'github' %}">
+                    Github
+                </a>
+                <form method="post" action="{% url 'login' %}" class="mt-4">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}">Имя пользователя:</label>
+                        {{ form.username }}
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <label for="{{ form.password.id_for_label }}">Пароль:</label>
+                        {{ form.password }}
+                    </div>
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <p>Неправильно введены данные, попробуйте снова.</p>
+                        </div>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-primary mt-4">Войти</button>
+                </form>
+
+                <p class="mt-3">Нет аккаунта? <a href="{% url 'signup' %}">Зарегистрироваться</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
