@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2 style = "text-align:center">Отзывы наших клиентов</h2>
+                <div class="review-blocks">
+                    {% for review in reviews reversed %}
+                        <div class="review-block">
+                            <h3>
+                                <span style="display: inline-block; vertical-align: middle;">Рейтинг: {{ review.rating }}/5</span>
+                                <img src="{% static 'images/star.png' %}" width="30" height="30" alt="">
+                            </h3>
+                            <h6>Отделение: {{ review.clinic }}</h6>
+                            <p style="font-size: 20px">{{ review.review_text }}</p>
+                            <div style="font-size: 14px; padding: 2px 5px">
+                                <p><strong>Автор:</strong> {{ review.user_name }}</p>
+                                <p><i>{{ review.review_date|naturaltime }}</i> </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6 table-container">
+                <section class="review-clinic">
+                    <h2 style = "text-align:center">Оставить отзыв нашей клинике</h2>
+            
+                    {% if user.is_authenticated %}
+                        <form method="post" class="mt-4">
+                            {% csrf_token %}
+                            <div class="table-responsive">
+                                <table class="table">
+                                    {% for field in form %}
+                                        <tr>
+                                            <td style="text-align: right;font-weight: bold">{{ field.label_tag }}</td>
+                                            <td>{{ field }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-between"> 
+                                <p>&nbsp</p>
+                                <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <p>Для того, чтобы оставить отзыв, пожалуйста, <a href="{% url 'login' %}">войдите в систему</a>.</p>
+                    {% endif %}
+            
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </section>
+            </div>
+        </div>
+    </div>
+    <style>
+        h2{
+            margin-top: 20px
+        }
+        h6{
+            font-size: 14px
+        }
+
+        .review-blocks {
+            margin-top: 25px;
+        }
+    
+        .review-block, .table {
+            background-color: #f8f8f8;
+            border: 3px solid #ddd;
+            padding: 5px;
+        }
+    </style>
+{% endblock %}
