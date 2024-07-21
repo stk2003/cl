@@ -1,0 +1,61 @@
+version: '3.7'
+
+services:
+  redis:
+    image: redis:alpine
+    hostname: redis
+    networks:
+      - net
+    ports:
+      - "6379:6379"
+  vet:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: vet
+    stdin_open: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/usr/src/app/
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - redis
+    networks:
+      - net
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "celery -A vet worker -l info"
+    volumes:
+      - ./:/usr/src/app/
+    depends_on:
+      - redis
+      - vet
+    restart: on-failure
+    networks:
+      - net
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "celery -A vet beat -l info"
+    volumes:
+      - ./:/usr/src/app/
+    depends_on:
+      - celery-worker
+    restart: on-failure
+    networks:
+      - net
+  mailhog:
+    image: mailhog/mailhog
+    logging:
+      driver: 'none'
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - net
+networks:
+  net:
